@@ -1,0 +1,35 @@
+steps:
+- name: gradle:7.2-jdk8
+  entrypoint: gradle
+  args: [ 'test' ]
+  id: 'run-tests'
+  waitFor: ['-']
+- name: gradle:7.2-jdk8
+  entrypoint: gradle
+  args: [ 'build' ]
+  id: 'gradle-build'
+  waitFor: ['run-tests']
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ "build", "-t", "us-central1-docker.pkg.dev/$PROJECT_ID/springbootimage/cloudrun:$COMMIT_SHA", "--build-arg=JAR_FILE=build/libs/workspace-0.0.1-SNAPSHOT.jar", "." ]
+  id: 'build-image-cloudrun'
+  waitFor: ['gradle-build']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/springbootimage/cloudrun:$COMMIT_SHA']
+  id: 'push-image-to-container-registry'
+  waitFor: ['build-image-cloudrun']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+    - 'run'
+    - 'deploy'
+    - 'cloudrun-tf'
+    - '--image'
+    - 'us-central1-docker.pkg.dev/$PROJECT_ID/springbootimage/cloudrun:$COMMIT_SHA'
+    - '--region'
+    - 'us-central1'
+    - '--platform'
+    - 'managed'
+    - '--allow-unauthenticated'
+  id: 'deploy-image-to-cloudrun'
+  waitFor: ['push-image-to-container-registry']
+images:
+- 'us-central1-docker.pkg.dev/$PROJECT_ID/springbootimage/cloudrun:$COMMIT_SHA'
