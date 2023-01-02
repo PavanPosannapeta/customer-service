@@ -1,10 +1,10 @@
 steps:
-- name: gradle:7.2-jdk8
+- name: gradle:7.6.0-jdk11
   entrypoint: gradle
   args: [ 'test' ]
   id: 'run-tests'
   waitFor: ['-']
-- name: gradle:7.2-jdk8
+- name: gradle:7.6.0-jdk11
   entrypoint: gradle
   args: [ 'build' ]
   id: 'gradle-build'
