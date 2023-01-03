@@ -1,14 +1,4 @@
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'build'
-      - '--build-arg'
-      - 'SONARQUBE_SCANNER_CLI_VERSION=4.6.0.2311'
-      - '-t'
-      - 'gcr.io/$PROJECT_ID/sonar-scanner:latest'
-      - '-t'
-      - 'gcr.io/$PROJECT_ID/sonar-scanner:4.6.0.2311'
-      - '.'
   - name: gradle:7.6.0-jdk11
     entrypoint: gradle
     args: [ 'test' ]
@@ -19,6 +9,17 @@ steps:
     args: [ 'build' ]
     id: 'gradle-build'
     waitFor: [ 'run-tests' ]
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'sonar setup'
+    args:
+      - 'build'
+      - '--build-arg'
+      - 'SONARQUBE_SCANNER_CLI_VERSION=4.6.0.2311'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/sonar-scanner:latest'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/sonar-scanner:4.6.0.2311'
+      - '.'
   - name: 'gcr.io/$PROJECT_ID/sonar-scanner:latest'
     id: 'sonar-qube'
     args:
