@@ -9,6 +9,15 @@ steps:
     args: [ 'build' ]
     id: 'gradle-build'
     waitFor: [ 'run-tests' ]
+  - name: 'gcr.io/$PROJECT_ID/sonar-scanner:latest'
+    id: 'sonar-qube'
+    args:
+      - '-Dsonar.host.url=https://sonarcloud.io'
+      - '-Dsonar.login=3cdfefe54e4389b20de5bea32844c93ad9b3169a'
+      - '-Dsonar.projectKey=pavanposannapeta'
+      - '-Dsonar.organization=Pavan Posannapeta'
+      - '-Dsonar.sources=.'
+    waitFor: [ 'gradle-build' ]
   - name: 'gcr.io/cloud-builders/docker'
     args: [ "build", "-t", "asia-south1-docker.pkg.dev/smart-howl-372909/demo-project/customer-service:$COMMIT_SHA",
             "--build-arg=JAR_FILE=build/libs/customer-service-0.0.1-SNAPSHOT.jar", "." ]
@@ -32,5 +41,8 @@ steps:
       - '--allow-unauthenticated'
     id: 'deploy-image-to-cloudrun'
     waitFor: [ 'push-image-to-container-registry' ]
+
 images:
   - 'asia-south1-docker.pkg.dev/$PROJECT_ID/demo-project/customer-service:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/sonar-scanner:latest'
+  - 'gcr.io/$PROJECT_ID/sonar-scanner:4.6.0.2311'
