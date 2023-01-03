@@ -1,4 +1,14 @@
 steps:
+  - - name: 'gcr.io/cloud-builders/docker'
+      args:
+        - 'build'
+        - '--build-arg'
+        - 'SONARQUBE_SCANNER_CLI_VERSION=4.6.0.2311'
+        - '-t'
+        - 'gcr.io/$PROJECT_ID/sonar-scanner:latest'
+        - '-t'
+        - 'gcr.io/$PROJECT_ID/sonar-scanner:4.6.0.2311'
+        - '.'
   - name: gradle:7.6.0-jdk11
     entrypoint: gradle
     args: [ 'test' ]
@@ -44,3 +54,5 @@ steps:
 
 images:
   - 'asia-south1-docker.pkg.dev/$PROJECT_ID/demo-project/customer-service:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/sonar-scanner:latest'
+  - 'gcr.io/$PROJECT_ID/sonar-scanner:4.6.0.2311'
