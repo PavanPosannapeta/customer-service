@@ -10,7 +10,8 @@ steps:
   id: 'gradle-build'
   waitFor: ['run-tests']
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ "build", "-t", "asia-south1-docker.pkg.dev/smart-howl-372909/demo-project/customer-service:$COMMIT_SHA", "--build-arg=JAR_FILE=build/libs/customer-service-0.0.1-SNAPSHOT.jar", "." ]
+  args: [ "build", "-t", "asia-south1-docker.pkg.dev/smart-howl-372909/demo-project/customer-service:$COMMIT_SHA",
+          "--build-arg=JAR_FILE=build/libs/customer-service-0.0.1-SNAPSHOT.jar", "." ]
   id: 'build-image-cloudrun'
   waitFor: ['gradle-build']
 - name: 'gcr.io/cloud-builders/docker'
