@@ -8,8 +8,8 @@ terraform {
 }
 
 provider "google" {
-  project     = "electric-orbit-372109"
-  region      = "us-central1"
-  zone        = "us-central1-a"
-  credentials = "/Users/manikanthabolisetty/terraformPractice/GCP/electric-orbit-372109-ca92fdd6c390.json"
+  project     = "my-second-project-378603"
+  region      = "asia-south1"
+  zone        = "asia-south1-a"
+  credentials = "/Users/pavan_posannapeta/Downloads/my-second-project-378603-e5f54eb751b8.json"
 }
